@@ -29,6 +29,11 @@ public class LoginFragment extends DropboxFragment {
         return R.layout.fragment_login;
     }
 
+    @Override
+    protected boolean loginWhenNoToken() {
+        return false;
+    }
+
     @OnClick(R.id.loginButton)
     public void onLoginClicked(View view) {
         Auth.startOAuth2Authentication(getContext(), getString(R.string.dropbox_app_key));

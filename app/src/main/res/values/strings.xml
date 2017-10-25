@@ -6,4 +6,7 @@
     <string name="username">Jméno</string>
     <string name="password">Heslo</string>
     <string name="login">Přihlásit</string>
+    <string name="login_failed_retry">Přihlášení k Dropboxu selhalo. Připojit znovu?</string>
+    <string name="cancel">Zrušit</string>
+    <string name="ok">OK</string>
 </resources>
