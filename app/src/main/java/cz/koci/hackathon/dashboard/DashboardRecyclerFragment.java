@@ -394,6 +394,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
                                 ShareDialogFragment dialogFragment = ShareDialogFragment.newInstance(entry.getId(), entry.getPathLower());
                                 dialogFragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
+                                thirdNameTextView.setText(R.string.shared);
                             }
                             if (item.getItemId() == R.id.menuShowSharing) {
 
