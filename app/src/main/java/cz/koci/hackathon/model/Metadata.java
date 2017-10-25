@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import java.io.File;
 import java.util.List;
 
 import cz.koci.hackathon.utils.AppDatabase;
@@ -247,14 +248,25 @@ public class Metadata extends BaseModel {
     private boolean downloaded;
 
     @Column
+    private boolean downloading;
+
+    @Column
     private String localPath;
 
     public boolean isDownloaded() {
-        return downloaded;
+        return downloaded && localPath != null && new File(localPath).exists();
     }
 
     public void setDownloaded(boolean downloaded) {
         this.downloaded = downloaded;
+    }
+
+    public boolean isDownloading() {
+        return downloading;
+    }
+
+    public void setDownloading(boolean downloading) {
+        this.downloading = downloading;
     }
 
     public String getLocalPath() {
