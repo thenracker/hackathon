@@ -1,4 +1,4 @@
-package cz.koci.hackathon.fragments;
+package cz.koci.hackathon.login;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,33 +9,23 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.shared.BaseFragment;
 
 /**
  * Created by petrw on 25.10.2017.
  */
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
 
     public static LoginFragment newInstance() {
-
         Bundle args = new Bundle();
-
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+    protected int getLayoutResId() {
+        return R.layout.fragment_login;
     }
 }

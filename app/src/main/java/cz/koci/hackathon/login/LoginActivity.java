@@ -1,4 +1,4 @@
-package cz.koci.hackathon.activities;
+package cz.koci.hackathon.login;
 
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
@@ -13,9 +13,9 @@ import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.users.FullAccount;
 
 import cz.koci.hackathon.R;
-import cz.koci.hackathon.fragments.LoginFragment;
+import cz.koci.hackathon.shared.BaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private String APP_KEY = "8x4akmcasi46rwv";
     private String APP_SECRET = "8yoj12oa7kpm8gc";
@@ -23,9 +23,13 @@ public class MainActivity extends AppCompatActivity {
     private String ACCESS_TOKEN = "vN-eKaVZIsAAAAAAAAAAB1UtnJUpWrPvPZO04F0T20bJLo7Yow6hozCFfduzDBAL";
 
     @Override
+    public int getLayoutResId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.container, LoginFragment.newInstance()).commit();
