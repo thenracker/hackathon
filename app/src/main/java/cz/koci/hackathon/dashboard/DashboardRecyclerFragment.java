@@ -31,6 +31,11 @@ import android.widget.TextView;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,6 +56,7 @@ import cz.koci.hackathon.model.Metadata;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
 import cz.koci.hackathon.service.RestClient;
 import cz.koci.hackathon.service.UploadFileTask;
+import cz.koci.hackathon.shared.LinkMetadataLoadedEvent;
 import cz.koci.hackathon.utils.FileUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,6 +122,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EventBus.getDefault().register(this);
 
         if (getArguments() != null) {
             myFiles = getArguments().getBoolean(ARG_IS_SHARED);
@@ -153,7 +160,12 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         } else {
             menuFab.setVisibility(View.GONE);
         }
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 
     private void checkPermissionsAndUpload() {
@@ -291,22 +303,35 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             });
         } else {
-            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
-            RestClient.get().getListSharedLinkMetadata(arg).enqueue(new Callback<Folder>() {
-                @Override
-                public void onResponse(Call<Folder> call, Response<Folder> response) {
-                    if (response.code() == 200) {
-                        System.out.println("kok");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Folder> call, Throwable t) {
-                    System.out.println("kook2");
-                }
-            });
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).queryList();
+            adapter.setEntries(metadatas);
+            adapter.notifyDataSetChanged();
+//            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
+//            RestClient.get().getListSharedLinkMetadata(arg).enqueue(new Callback<Folder>() {
+//                @Override
+//                public void onResponse(Call<Folder> call, Response<Folder> response) {
+//                    if (response.code() == 200) {
+//                        System.out.println("kok");
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Folder> call, Throwable t) {
+//                    System.out.println("kook2");
+//                }
+//            });
         }
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMetadataLoaded(LinkMetadataLoadedEvent event) {
+        if (!myFiles) {
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).queryList();
+            adapter.setEntries(metadatas);
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     class DashboardRecyclerAdapter extends RecyclerView.Adapter<DashboardRecyclerAdapter.ViewHolder> {
