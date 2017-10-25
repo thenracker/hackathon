@@ -1,5 +1,6 @@
 package cz.koci.hackathon.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.dashboard.DashboardActivity;
 import cz.koci.hackathon.shared.BaseFragment;
 
 /**
@@ -27,5 +29,14 @@ public class LoginFragment extends BaseFragment {
     @Override
     protected int getLayoutResId() {
         return R.layout.fragment_login;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Intent intent = new Intent(getActivity(), DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }
