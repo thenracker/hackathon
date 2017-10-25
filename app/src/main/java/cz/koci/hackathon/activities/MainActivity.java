@@ -1,6 +1,7 @@
 package cz.koci.hackathon.activities;
 
 import android.os.Bundle;
+import android.os.NetworkOnMainThreadException;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.users.FullAccount;
 
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.fragments.LoginFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +26,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, LoginFragment.newInstance()).commit();
+        }
+
         try {
-            //initDropBox();
-        } catch (DbxException e) {
+            initDropBox();
+        } catch (DbxException | NetworkOnMainThreadException e) {
             //
         }
     }
