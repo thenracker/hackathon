@@ -90,6 +90,9 @@ public class ShareDialogFragment extends DialogFragment implements View.OnClickL
             }
         });
 
+//        todo vrátit visibile, když budou fungovat settings
+        passwordCheckedTextView.setVisibility(View.GONE);
+
         builder.setView(view)
                 .setTitle(R.string.share_dialog_title)
                 .setPositiveButton(android.R.string.ok, null)
@@ -140,7 +143,9 @@ public class ShareDialogFragment extends DialogFragment implements View.OnClickL
             settings = new SharedLinkSettings(password);
         }
 
-        SharedLinkArgument argument = new SharedLinkArgument(path, settings);
+//        todo vyřešit unauthorized na settings
+
+        SharedLinkArgument argument = new SharedLinkArgument(path, (SharedLinkSettings) null);
 
         Call<Metadata> call = RestClient.get().createSharedLink(argument);
         call.enqueue(new Callback<Metadata>() {
@@ -171,11 +176,11 @@ public class ShareDialogFragment extends DialogFragment implements View.OnClickL
     private void shareLink(String url, String email, String note) {
         dismiss();
 
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_EMAIL, email);
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject));
-        intent.putExtra(Intent.EXTRA_TEXT, note + "/n/n" + url);
+        intent.putExtra(Intent.EXTRA_TEXT, note + "\n\n" + url);
 
         startActivity(Intent.createChooser(intent, getString(R.string.send_email)));
     }
