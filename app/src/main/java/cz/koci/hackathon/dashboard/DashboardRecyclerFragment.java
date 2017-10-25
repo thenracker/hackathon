@@ -3,6 +3,7 @@ package cz.koci.hackathon.dashboard;
 import android.Manifest;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -74,12 +76,12 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     private String currentFolder = "";
 
     private static final String ARG_IS_SHARED = "ARG_IS_SHARED";
-    private boolean isShared; //odeslané vs přijaté odkazy a soubory
+    private boolean myFiles; //odeslané vs přijaté odkazy a soubory
 
-    public static DashboardRecyclerFragment newInstance(boolean iShared) { //todo
+    public static DashboardRecyclerFragment newInstance(boolean myFiles) { //todo
         Bundle args = new Bundle();
         DashboardRecyclerFragment fragment = new DashboardRecyclerFragment();
-        args.putBoolean(ARG_IS_SHARED, iShared);
+        args.putBoolean(ARG_IS_SHARED, myFiles);
         fragment.setArguments(args);
         return fragment;
     }
@@ -100,7 +102,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null) {
-            isShared = getArguments().getBoolean(ARG_IS_SHARED);
+            myFiles = getArguments().getBoolean(ARG_IS_SHARED);
         }
 
         swipeRefreshLayout.setRefreshing(false);
@@ -115,7 +117,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        if (isShared) {
+        if (myFiles) {
             menuFab.setVisibility(View.VISIBLE);
             pickFileFab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -296,12 +298,16 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             } else {
                 if (metadata.getName().contains(".pdf")) {
                     holder.imageView.setImageResource(R.drawable.ic_pdf_white_circle_green_24px);
+                } else if (metadata.getName().contains(".zip")) {
+                    holder.imageView.setImageResource(R.drawable.ic_zip_white_circle_green_24px);
                 } else {
                     holder.imageView.setImageResource(R.drawable.ic_file_white_circle_green_24px);
                 }
             }
             holder.nameTextView.setText(entries.get(position).getName());
             holder.subNameTextView.setText(entries.get(position).getTag());
+            holder.thirdNameTextView.setText(R.string.not_shared_yet);
+
         }
 
         @Override
@@ -321,18 +327,46 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             protected TextView subNameTextView;
             @BindView(R.id.imageView)
             protected ImageView imageView;
+            @BindView(R.id.thirdNameTextView)
+            protected TextView thirdNameTextView;
+            @BindView(R.id.menuImageView)
+            protected ImageView menuImageView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
                 itemView.setOnClickListener(this);
+                menuImageView.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), DetailActivity.class);
-                startActivity(i);
+                if (v instanceof ImageView) {
+                    showPopupMenu(getContext(), v, R.menu.metadata_item_menu, new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            if (item.getItemId() == R.id.menuShare) {
+                                int position = getLayoutPosition();
+                                entries.get(position); //self yourself Dane
+                            }
+                            if (item.getItemId() == R.id.menuShowSharing) {
+
+                            }
+                            return true;
+                        }
+                    });
+                } else {
+                    Intent i = new Intent(getActivity(), DetailActivity.class);
+                    startActivity(i);
+                }
             }
         }
+    }
+
+    public static void showPopupMenu(final Context context, View v, int resource, PopupMenu.OnMenuItemClickListener listener) {
+        PopupMenu popupMenu = new PopupMenu(context, v);
+        popupMenu.getMenuInflater().inflate(resource, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(listener);
+        popupMenu.show();
     }
 }
