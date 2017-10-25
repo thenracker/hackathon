@@ -10,6 +10,7 @@ android {
         applicationId "cz.koci.hackathon"
         minSdkVersion 21
         targetSdkVersion 25
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -45,5 +46,4 @@ dependencies {
     compile 'com.dropbox.core:dropbox-core-sdk:3.0.5'
 
     testCompile 'junit:junit:4.12'
-    compile files('libs/dropbox-android-sdk-1.6.3.jar')
 }
