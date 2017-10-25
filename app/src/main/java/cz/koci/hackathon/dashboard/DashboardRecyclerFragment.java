@@ -33,6 +33,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.dialog.ShareDialogFragment;
 import cz.koci.hackathon.login.DropboxFragment;
 import cz.koci.hackathon.login.service.DropboxClientFactory;
 import cz.koci.hackathon.model.Folder;
@@ -378,7 +379,10 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                         public boolean onMenuItemClick(MenuItem item) {
                             if (item.getItemId() == R.id.menuShare) {
                                 int position = getLayoutPosition();
-                                entries.get(position); //self yourself Dane
+                                Metadata entry = entries.get(position); //self yourself Dane
+
+                                ShareDialogFragment dialogFragment = ShareDialogFragment.newInstance(entry.getId(), entry.getPathLower());
+                                dialogFragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
                             }
                             if (item.getItemId() == R.id.menuShowSharing) {
 
