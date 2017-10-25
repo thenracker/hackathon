@@ -7,10 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dropbox.core.v2.files.FileMetadata;
@@ -38,11 +37,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -56,6 +50,7 @@ import cz.koci.hackathon.login.service.DropboxClientFactory;
 import cz.koci.hackathon.model.Folder;
 import cz.koci.hackathon.model.Metadata;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
+import cz.koci.hackathon.service.DownloadFileTask;
 import cz.koci.hackathon.service.RestClient;
 import cz.koci.hackathon.service.UploadFileTask;
 import cz.koci.hackathon.shared.LinkMetadataLoadedEvent;
@@ -194,7 +189,6 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             FileUtils.pickFile(this);
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -384,6 +378,12 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 holder.imageView.setVisibility(View.VISIBLE);
             }
 
+            if (metadata.isDownloading()) {
+                holder.progressBar.setVisibility(View.VISIBLE);
+            } else {
+                holder.progressBar.setVisibility(View.GONE);
+            }
+
             if (position == entries.size() - 1) {
                 holder.divider.setVisibility(View.GONE);
             } else {
@@ -412,6 +412,8 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             protected ImageView imageView;
             @BindView(R.id.thirdNameTextView)
             protected TextView thirdNameTextView;
+            @BindView(R.id.progressBar)
+            protected ProgressBar progressBar;
             @BindView(R.id.menuImageView)
             protected ImageView menuImageView;
             @BindView(R.id.divider)
@@ -451,60 +453,68 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                         i.putExtra(ARG_ROOT_PATH, metadata.getPathLower());
                         i.putExtra(ARG_IS_SHARED, myFiles);
                         startActivity(i);
-                    } else if (metadata.isDownloaded()) {
-                        Intent intent = new Intent();
-                        intent.setAction(android.content.Intent.ACTION_VIEW);
-                        File file = new File(metadata.getLocalPath());
-
-                        MimeTypeMap mime = MimeTypeMap.getSingleton();
-                        String ext = file.getName().substring(file.getName().indexOf(".") + 1);
-                        String type = mime.getMimeTypeFromExtension(ext);
-
-                        intent.setDataAndType(Uri.fromFile(file), type);
-
-                        getContext().startActivity(intent);
+                    } else if (metadata.isDownloaded() && metadata.getLocalPath() != null) {
+                        openFileExternal(metadata);
                     } else {
-                        AsyncTask.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                buildNotification(getString(R.string.downloading), getString(R.string.downloading_in_progress), true);
-                                try {
-                                    downloadFile(metadata);
-                                    metadata.setDownloaded(true);
-                                    metadata.save();
-                                    buildNotification(getString(R.string.downloading), getString(R.string.downloading_successful), false);
-                                } catch (IOException e) {
-                                    buildNotification(getString(R.string.downloading), getString(R.string.downloading_failed), false);
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+                        downloadFile(metadata);
                     }
                 }
             }
         }
-    }
 
-    private void downloadFile(Metadata metadata) throws IOException {
-        URL url;
-        url = new URL(metadata.getUrl());
-        URLConnection urlConnection = url.openConnection();
-        urlConnection.connect();
-        int fileSize = urlConnection.getContentLength();
-        InputStream inputStream = urlConnection.getInputStream();
-        String filePath = Environment.getExternalStorageDirectory() + "/Hackathon/" + metadata.getName();
-        new File(filePath).getParentFile().mkdirs(); //vytvoření složek
-        FileOutputStream fos = new FileOutputStream(filePath);
+        private void downloadFile(final Metadata metadata) {
+            metadata.setDownloading(true);
+            adapter.notifyItemChanged(entries.indexOf(metadata));
+            //buildNotification(getString(R.string.downloading), getString(R.string.downloading_in_progress), true);
+            new DownloadFileTask(getContext(), DropboxClientFactory.getClient(), new DownloadFileTask.Callback() {
+                @Override
+                public void onDownloadComplete(File result) {
+                    if (getActivity() == null) {
+                        return;
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //buildNotification(getString(R.string.downloading), getString(R.string.downloading_successful), false);
+                            metadata.setDownloading(false);
+                            adapter.notifyItemChanged(entries.indexOf(metadata));
+                        }
+                    });
+                }
 
-        int bytesRead;
-        byte[] buffer = new byte[2048];
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            fos.write(buffer, 0, bytesRead);
+                @Override
+                public void onError(Exception e) {
+                    if (getActivity() == null) {
+                        return;
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //buildNotification(getString(R.string.downloading), getString(R.string.downloading_failed), false);
+                            metadata.setDownloading(false);
+                            adapter.notifyItemChanged(entries.indexOf(metadata));
+                            openFileExternal(metadata);
+                        }
+                    });
+                }
+            }).execute(metadata);
         }
-
-        fos.close();
-        inputStream.close();
     }
+
+    private void openFileExternal(Metadata metadata) {
+        Intent intent = new Intent();
+        intent.setAction(android.content.Intent.ACTION_VIEW);
+        File file = new File(metadata.getLocalPath());
+
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase();
+        String type = mime.getMimeTypeFromExtension(ext);
+
+        intent.setDataAndType(Uri.fromFile(file), type);
+
+        getContext().startActivity(intent);
+    }
+
 
     public static void showPopupMenu(final Context context, View v, int resource, PopupMenu.OnMenuItemClickListener listener) {
         PopupMenu popupMenu = new PopupMenu(context, v);
