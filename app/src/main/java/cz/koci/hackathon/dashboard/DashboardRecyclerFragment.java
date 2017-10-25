@@ -300,7 +300,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             });
         } else {
-            List<Metadata> metadatas = SQLite.select().from(Metadata.class).where(Metadata_Table.shared.eq(false)).queryList();
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).where(Metadata_Table.shared.eq(true)).queryList();
             adapter.setEntries(metadatas);
             adapter.notifyDataSetChanged();
 //            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
@@ -324,7 +324,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMetadataLoaded(LinkMetadataLoadedEvent event) {
         if (!myFiles) {
-            List<Metadata> metadatas = SQLite.select().from(Metadata.class).where(Metadata_Table.shared.eq(false)).queryList();
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).where(Metadata_Table.shared.eq(true)).queryList();
             adapter.setEntries(metadatas);
             adapter.notifyDataSetChanged();
         }
