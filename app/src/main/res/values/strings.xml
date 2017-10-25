@@ -13,4 +13,8 @@
     <string name="refresh">Aktualizovat</string>
     <string name="i_shared">Odeslané</string>
     <string name="they_shared">Přijaté</string>
+    <string name="sending_in_progress">Probíhá odesílání souboru</string>
+    <string name="sending">Odesílání</string>
+    <string name="sending_finished">Odesílání dokončeno</string>
+    <string name="sending_failed">Odesílání selhalo</string>
 </resources>
