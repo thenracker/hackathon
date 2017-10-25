@@ -91,7 +91,7 @@ public class ShareDialogFragment extends DialogFragment implements View.OnClickL
         });
 
 //        todo vrátit visibile, když budou fungovat settings
-        passwordCheckedTextView.setVisibility(View.GONE);
+        //passwordCheckedTextView.setVisibility(View.GONE);
 
         builder.setView(view)
                 .setTitle(R.string.share_dialog_title)

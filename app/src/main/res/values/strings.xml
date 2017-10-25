@@ -37,4 +37,5 @@
     <string name="send_email">Odeslat email</string>
     <string name="email_address">Adresát</string>
     <string name="note">Poznámka</string>
+    <string name="shared">Sdíleno</string>
 </resources>
