@@ -71,6 +71,9 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @BindView(R.id.pickFileFab)
     FloatingActionButton pickFileFab;
 
+    @BindView(R.id.emptyView)
+    View emptyView;
+
     private DashboardRecyclerAdapter adapter;
     private String currentFolder = "";
 
@@ -342,6 +345,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
         public void setEntries(List<Metadata> entries) {
             this.entries = entries;
+            emptyView.setVisibility(entries.isEmpty()? View.VISIBLE : View.GONE);
         }
 
         class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

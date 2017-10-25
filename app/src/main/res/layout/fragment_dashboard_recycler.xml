@@ -20,15 +20,23 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <!--<android.support.design.widget.FloatingActionButton
-        android:id="@+id/uploadFab"
+    <LinearLayout
+        android:id="@+id/emptyView"
+        android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_white_24px"
-        android:backgroundTint="@color/colorAccent"
-        app:borderWidth="0dp" />-->
+        android:layout_gravity="center">
+
+        <ImageView
+            android:src="@drawable/ic_search_white_24px"
+            android:layout_width="160dp"
+            android:layout_height="160dp" />
+        <TextView
+            android:gravity="center"
+            android:text="@string/no_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/menuFab"
