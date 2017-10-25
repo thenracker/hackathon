@@ -21,4 +21,6 @@ public class ParcelFile {
     @Column
     String filePath;
 
+    public ParcelFile() {
+    }
 }

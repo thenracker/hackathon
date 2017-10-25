@@ -3,6 +3,7 @@ package cz.koci.hackathon.model;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import cz.koci.hackathon.utils.AppDatabase;
 
@@ -11,7 +12,7 @@ import cz.koci.hackathon.utils.AppDatabase;
  */
 
 @Table(database = AppDatabase.class)
-public class Parcel {
+public class Parcel extends BaseModel{
 
     @PrimaryKey(autoincrement = true)
     long id;
@@ -25,4 +26,12 @@ public class Parcel {
     @Column
     long downloadDate;
 
+    @Column
+    String link;
+
+    @Column
+    boolean newlyReceived;
+
+    public Parcel() {
+    }
 }
