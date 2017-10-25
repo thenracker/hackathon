@@ -9,6 +9,7 @@ import java.util.List;
 public class Folder {
 
     private List<Metadata> entries = null;
+    private List<Metadata> links = null;
     private String cursor;
     private Boolean hasMore;
 
@@ -18,6 +19,14 @@ public class Folder {
 
     public void setEntries(List<Metadata> entries) {
         this.entries = entries;
+    }
+
+    public List<Metadata> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Metadata> links) {
+        this.links = links;
     }
 
     public String getCursor() {

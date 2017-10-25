@@ -255,9 +255,9 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
     @Override
     public void onRefresh() {
+        ListFolderArgument arg = new ListFolderArgument();
+        arg.setPath(currentFolder);
         if (myFiles) {
-            ListFolderArgument arg = new ListFolderArgument();
-            arg.setPath(currentFolder);
             RestClient.get().listFolder(arg).enqueue(new Callback<Folder>() {
                 @Override
                 public void onResponse(Call<Folder> call, Response<Folder> response) {
@@ -277,8 +277,20 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             });
         } else {
-            // TODO: 25.10.2017  
-            //z DB! !!!!
+            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
+            RestClient.get().getListSharedLinkMetadata(arg).enqueue(new Callback<Folder>() {
+                @Override
+                public void onResponse(Call<Folder> call, Response<Folder> response) {
+                    if (response.code() == 200){
+                        System.out.println("kok");
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Folder> call, Throwable t) {
+                    System.out.println("kook2");
+                }
+            });
         }
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -315,6 +327,12 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             holder.subNameTextView.setText(entries.get(position).getTag());
             holder.thirdNameTextView.setText(R.string.not_shared_yet);
 
+            if (position == entries.size()-1){
+                holder.divider.setVisibility(View.GONE);
+            } else{
+                holder.divider.setVisibility(View.VISIBLE);
+            }
+
         }
 
         @Override
@@ -338,6 +356,8 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             protected TextView thirdNameTextView;
             @BindView(R.id.menuImageView)
             protected ImageView menuImageView;
+            @BindView(R.id.divider)
+            View divider;
 
             public ViewHolder(View itemView) {
                 super(itemView);
