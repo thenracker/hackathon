@@ -31,7 +31,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
-import cz.koci.hackathon.detail.DetailActivity;
 import cz.koci.hackathon.login.DropboxFragment;
 import cz.koci.hackathon.login.service.DropboxClientFactory;
 import cz.koci.hackathon.model.Folder;
@@ -73,13 +72,16 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     private DashboardRecyclerAdapter adapter;
     private String currentFolder = "";
 
-    private static final String ARG_IS_SHARED = "ARG_IS_SHARED";
+    public static final String ARG_IS_SHARED = "ARG_IS_SHARED";
+    public static final String ARG_ROOT_PATH = "ARG_ROOT_PATH";
+
     private boolean isShared; //odeslané vs přijaté odkazy a soubory
 
-    public static DashboardRecyclerFragment newInstance(boolean iShared) { //todo
+    public static DashboardRecyclerFragment newInstance(String rootPath, boolean iShared) { //todo
         Bundle args = new Bundle();
         DashboardRecyclerFragment fragment = new DashboardRecyclerFragment();
         args.putBoolean(ARG_IS_SHARED, iShared);
+        args.putString(ARG_ROOT_PATH, rootPath);
         fragment.setArguments(args);
         return fragment;
     }
@@ -101,6 +103,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
         if (getArguments() != null) {
             isShared = getArguments().getBoolean(ARG_IS_SHARED);
+            currentFolder = getArguments().getString(ARG_ROOT_PATH);
         }
 
         swipeRefreshLayout.setRefreshing(false);
@@ -251,7 +254,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @Override
     public void onRefresh() {
         ListFolderArgument arg = new ListFolderArgument();
-        arg.setPath("");
+        arg.setPath(currentFolder);
         RestClient.get().listFolder(arg).enqueue(new Callback<Folder>() {
             @Override
             public void onResponse(Call<Folder> call, Response<Folder> response) {
@@ -330,8 +333,15 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), DetailActivity.class);
-                startActivity(i);
+                Metadata metadata = entries.get(getAdapterPosition());
+                if (metadata.getType() == Metadata.Type.FOLDER) {
+                    Intent i = new Intent(getActivity(), DashboardRecyclerActivity.class);
+                    i.putExtra(ARG_ROOT_PATH, metadata.getPathLower());
+                    i.putExtra(ARG_IS_SHARED, isShared);
+                    startActivity(i);
+                } else {
+                    //TODO spustit soubor
+                }
             }
         }
     }

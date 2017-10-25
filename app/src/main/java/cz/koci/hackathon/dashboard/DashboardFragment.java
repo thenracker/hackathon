@@ -62,9 +62,9 @@ public class DashboardFragment extends BaseFragment {
         @Override
         public Fragment getItem(int position) {
             if (position == 0) {
-                return DashboardRecyclerFragment.newInstance(true);
+                return DashboardRecyclerFragment.newInstance("", true);
             } else {
-                return DashboardRecyclerFragment.newInstance(false);
+                return DashboardRecyclerFragment.newInstance("", false);
             }
         }
 
