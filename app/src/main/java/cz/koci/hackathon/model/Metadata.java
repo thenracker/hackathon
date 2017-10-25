@@ -35,6 +35,9 @@ public class Metadata {
         }
     }
 
+    @SerializedName("url")
+    @Expose
+    private String url;
     @SerializedName(".tag")
     @Expose
     private String tag;
@@ -74,6 +77,9 @@ public class Metadata {
     @SerializedName("content_hash")
     @Expose
     private String contentHash;
+    @SerializedName("link_permissions")
+    @Expose
+    private LinkPermissions linkPermissions;
 
     private transient Type type;
 
@@ -179,6 +185,22 @@ public class Metadata {
 
     public void setContentHash(String contentHash) {
         this.contentHash = contentHash;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public LinkPermissions getLinkPermissions() {
+        return linkPermissions;
+    }
+
+    public void setLinkPermissions(LinkPermissions linkPermissions) {
+        this.linkPermissions = linkPermissions;
     }
 
     public Type getType() {
