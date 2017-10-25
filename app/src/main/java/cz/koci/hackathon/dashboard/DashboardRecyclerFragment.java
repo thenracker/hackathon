@@ -277,7 +277,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             });
         } else {
-            // TODO: 25.10.2017  
+            // TODO: 25.10.2017
             //z DB! !!!!
         }
         swipeRefreshLayout.setRefreshing(false);
