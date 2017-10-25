@@ -22,4 +22,13 @@
         <!--<item name="android:textSize">@dimen/app_head</item>-->
     </style>
 
+    <style name="Widget.MyApp.Toolbar.Solid" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">#fff</item>
+    </style>
+
+    <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <!-- Parent theme sets colorControlNormal to textColorPrimary. -->
+        <item name="android:textColorPrimary">#fff</item>
+    </style>
+
 </resources>

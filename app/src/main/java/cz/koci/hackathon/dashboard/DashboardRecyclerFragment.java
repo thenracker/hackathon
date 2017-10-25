@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dropbox.core.v2.files.FileMetadata;
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.List;
 
@@ -59,8 +60,13 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.uploadFab)
-    FloatingActionButton uploadFab;
+
+    @BindView(R.id.menuFab)
+    FloatingActionMenu menuFab;
+    @BindView(R.id.openCameraFab)
+    FloatingActionButton openCameraFab;
+    @BindView(R.id.pickFileFab)
+    FloatingActionButton pickFileFab;
 
     private DashboardRecyclerAdapter adapter;
     private String currentFolder = "";
@@ -108,15 +114,21 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         recyclerView.setAdapter(adapter);
 
         if (isShared) {
-            uploadFab.setVisibility(View.VISIBLE);
-            uploadFab.setOnClickListener(new View.OnClickListener() {
+            menuFab.setVisibility(View.VISIBLE);
+            pickFileFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     checkPermissionsAndUpload();
                 }
             });
+            openCameraFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //todo
+                }
+            });
         } else {
-            uploadFab.setVisibility(View.GONE);
+            pickFileFab.setVisibility(View.GONE);
         }
 
     }
@@ -183,7 +195,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         if (ongoing) {
             builder.setProgress(0, 0, true);
         }
-        
+
         Notification notification = builder.build();
 
         NotificationManagerCompat.from(getContext()).notify(TAG, 99, notification);
