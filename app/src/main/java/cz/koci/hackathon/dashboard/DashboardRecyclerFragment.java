@@ -28,6 +28,8 @@ import com.dropbox.core.v2.files.FileMetadata;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -285,7 +287,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             RestClient.get().getListSharedLinkMetadata(arg).enqueue(new Callback<Folder>() {
                 @Override
                 public void onResponse(Call<Folder> call, Response<Folder> response) {
-                    if (response.code() == 200){
+                    if (response.code() == 200) {
                         System.out.println("kok");
                     }
                 }
@@ -328,12 +330,21 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             }
             holder.nameTextView.setText(entries.get(position).getName());
-            holder.subNameTextView.setText(entries.get(position).getTag());
+            if (entries.get(position).getClientModified() != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:SS'Z'");
+                try {
+                    Date parse = sdf.parse(entries.get(position).getClientModified());
+                    holder.subNameTextView.setText(new SimpleDateFormat("d.M.yyyy").format(parse));
+                } catch (Exception e) {
+
+                }
+
+            }
             holder.thirdNameTextView.setText(R.string.not_shared_yet);
 
-            if (position == entries.size()-1){
+            if (position == entries.size() - 1) {
                 holder.divider.setVisibility(View.GONE);
-            } else{
+            } else {
                 holder.divider.setVisibility(View.VISIBLE);
             }
 
@@ -346,7 +357,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
         public void setEntries(List<Metadata> entries) {
             this.entries = entries;
-            emptyView.setVisibility(entries.isEmpty()? View.VISIBLE : View.GONE);
+            emptyView.setVisibility(entries.isEmpty() ? View.VISIBLE : View.GONE);
         }
 
         class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
