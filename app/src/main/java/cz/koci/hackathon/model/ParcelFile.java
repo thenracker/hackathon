@@ -11,18 +11,14 @@ import cz.koci.hackathon.utils.AppDatabase;
  */
 
 @Table(database = AppDatabase.class)
-public class Parcel {
+public class ParcelFile {
 
     @PrimaryKey(autoincrement = true)
     long id;
 
     @Column
-    String name;
+    long parcelId;
     @Column
-    long createDate;
-    @Column
-    long uploadDate;
-    @Column
-    long downloadDate;
+    String filePath;
 
 }
