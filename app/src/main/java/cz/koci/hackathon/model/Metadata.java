@@ -15,6 +15,8 @@ import cz.koci.hackathon.utils.AppDatabase;
 
 @Table(database = AppDatabase.class)
 public class Metadata extends BaseModel {
+
+
     public enum Type {
         FOLDER("folder"), FILE("file"), UNKNOWN(null);
 
@@ -247,11 +249,13 @@ public class Metadata extends BaseModel {
     @Column
     private boolean downloaded;
 
-    @Column
-    private boolean downloading;
+    private transient boolean downloading;
 
     @Column
     private String localPath;
+
+    @Column
+    private boolean shared;
 
     public boolean isDownloaded() {
         return downloaded && localPath != null && new File(localPath).exists();
@@ -275,5 +279,13 @@ public class Metadata extends BaseModel {
 
     public void setLocalPath(String localPath) {
         this.localPath = localPath;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
     }
 }

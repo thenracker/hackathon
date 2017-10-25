@@ -49,6 +49,7 @@ import cz.koci.hackathon.login.DropboxFragment;
 import cz.koci.hackathon.login.service.DropboxClientFactory;
 import cz.koci.hackathon.model.Folder;
 import cz.koci.hackathon.model.Metadata;
+import cz.koci.hackathon.model.Metadata_Table;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
 import cz.koci.hackathon.service.DownloadFileTask;
 import cz.koci.hackathon.service.RestClient;
@@ -299,7 +300,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             });
         } else {
-            List<Metadata> metadatas = SQLite.select().from(Metadata.class).queryList();
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).where(Metadata_Table.shared.eq(false)).queryList();
             adapter.setEntries(metadatas);
             adapter.notifyDataSetChanged();
 //            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
@@ -323,7 +324,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMetadataLoaded(LinkMetadataLoadedEvent event) {
         if (!myFiles) {
-            List<Metadata> metadatas = SQLite.select().from(Metadata.class).queryList();
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).where(Metadata_Table.shared.eq(false)).queryList();
             adapter.setEntries(metadatas);
             adapter.notifyDataSetChanged();
         }
@@ -502,17 +503,21 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     }
 
     private void openFileExternal(Metadata metadata) {
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        File file = new File(metadata.getLocalPath());
+        try {
+            Intent intent = new Intent();
+            intent.setAction(android.content.Intent.ACTION_VIEW);
+            File file = new File(metadata.getLocalPath());
 
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase();
-        String type = mime.getMimeTypeFromExtension(ext);
+            MimeTypeMap mime = MimeTypeMap.getSingleton();
+            String ext = file.getName().substring(file.getName().lastIndexOf(".") + 1).toLowerCase();
+            String type = mime.getMimeTypeFromExtension(ext);
 
-        intent.setDataAndType(Uri.fromFile(file), type);
+            intent.setDataAndType(Uri.fromFile(file), type);
 
-        getContext().startActivity(intent);
+            getContext().startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
