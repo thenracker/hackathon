@@ -25,4 +25,12 @@
 
     <string name="fingerprint_login">Přihlašte se otiskem prstu</string>
     <string name="no_data">Žádné položky</string>
+
+    <string name="prompt_set_password">Zadat heslo?</string>
+    <string name="share_dialog_title">Sdílet</string>
+    <string name="error_missing_email">Zadejte email adresáta</string>
+    <string name="email_subject">Hackathon 2017</string>
+    <string name="send_email">Odeslat email</string>
+    <string name="email_address">Adresát</string>
+    <string name="note">Poznámka</string>
 </resources>
