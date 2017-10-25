@@ -12,11 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
 import cz.koci.hackathon.login.DropboxFragment;
 import cz.koci.hackathon.model.Folder;
+import cz.koci.hackathon.model.Metadata;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
 import cz.koci.hackathon.service.RestClient;
 import cz.koci.hackathon.shared.BaseActivity;
@@ -98,9 +101,10 @@ public class DashboardFragment extends DropboxFragment implements SwipeRefreshLa
             @Override
             public void onResponse(Call<Folder> call, Response<Folder> response) {
                 if (response.code() == 200){
-                    System.out.println("tt");
+                    adapter.setEntries(response.body().getEntries());
+                    adapter.notifyDataSetChanged();
                 } else if (response.code() >= 400){
-
+                    // TODO: 25.10.2017
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -117,8 +121,10 @@ public class DashboardFragment extends DropboxFragment implements SwipeRefreshLa
 
     class DashboardRecyclerAdapter extends RecyclerView.Adapter<DashboardRecyclerAdapter.ViewHolder> {
 
+        private List<Metadata> entries;
+
         public DashboardRecyclerAdapter() {
-            //todo
+
         }
 
         @Override
@@ -129,13 +135,17 @@ public class DashboardFragment extends DropboxFragment implements SwipeRefreshLa
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.nameTextView.setText("Test " + position);
-            holder.subNameTextView.setText("SubTest " + position);
+            holder.nameTextView.setText(entries.get(position).getName());
+            holder.subNameTextView.setText(entries.get(position).getTag());
         }
 
         @Override
         public int getItemCount() {
-            return 50;
+            return entries == null? 0 : entries.size();
+        }
+
+        public void setEntries(List<Metadata> entries) {
+            this.entries = entries;
         }
 
         class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
