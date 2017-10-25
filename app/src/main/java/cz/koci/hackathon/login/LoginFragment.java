@@ -4,18 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
+import android.widget.Toolbar;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import com.dropbox.core.android.Auth;
 
 import butterknife.OnClick;
 import cz.koci.hackathon.R;
 import cz.koci.hackathon.dashboard.DashboardActivity;
+import cz.koci.hackathon.shared.BaseActivity;
+import cz.koci.hackathon.shared.BaseFragment;
 
 /**
  * Created by petrw on 25.10.2017.
  */
 
 public class LoginFragment extends DropboxFragment {
+    @BindView(R.id.toolbar)
+    android.support.v7.widget.Toolbar toolbar;
 
     public static LoginFragment newInstance() {
         Bundle args = new Bundle();
@@ -42,6 +51,9 @@ public class LoginFragment extends DropboxFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        BaseActivity activity = ((BaseActivity) getActivity());
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setTitle(R.string.login_title);
     }
 
     @Override

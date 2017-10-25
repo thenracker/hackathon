@@ -1,5 +1,6 @@
 package cz.koci.hackathon.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -19,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.detail.DetailActivity;
 import cz.koci.hackathon.login.DropboxFragment;
 import cz.koci.hackathon.model.Folder;
 import cz.koci.hackathon.model.Metadata;
@@ -168,10 +170,8 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
             @Override
             public void onClick(View v) {
-                /*Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);*/
+                Intent i  = new Intent(getActivity(), DetailActivity.class);
+                startActivity(i);
             }
         }
     }

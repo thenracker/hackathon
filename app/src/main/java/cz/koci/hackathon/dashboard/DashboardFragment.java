@@ -7,32 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
-import cz.koci.hackathon.login.DropboxFragment;
-import cz.koci.hackathon.model.Folder;
-import cz.koci.hackathon.model.Metadata;
-import cz.koci.hackathon.model.dto.ListFolderArgument;
-import cz.koci.hackathon.service.RestClient;
 import cz.koci.hackathon.shared.BaseActivity;
 import cz.koci.hackathon.shared.BaseFragment;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by petrw on 25.10.2017.
@@ -80,9 +61,9 @@ public class DashboardFragment extends BaseFragment {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0){
+            if (position == 0) {
                 return DashboardRecyclerFragment.newInstance(true);
-            } else{
+            } else {
                 return DashboardRecyclerFragment.newInstance(false);
             }
         }
@@ -94,9 +75,9 @@ public class DashboardFragment extends BaseFragment {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            if (position == 0){
+            if (position == 0) {
                 return getString(R.string.i_shared);
-            } else{
+            } else {
                 return getString(R.string.they_shared);
             }
         }
