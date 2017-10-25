@@ -2,9 +2,16 @@
 package cz.koci.hackathon.model;
 
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Field {
 
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("value")
+    @Expose
     private String value;
 
     public String getName() {
