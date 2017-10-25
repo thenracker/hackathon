@@ -41,7 +41,9 @@ public class DashboardActivity extends BaseActivity {
                 @Override
                 public void onResponse(Call<Metadata> call, Response<Metadata> response) {
                     if (response.code() == 200) {
-                        response.body().save();
+                        Metadata metadata = response.body();
+                        metadata.setShared(true);
+                        metadata.save();
                         receivedLink.delete();
                         EventBus.getDefault().post(new LinkMetadataLoadedEvent());
                     } else if (response.code() >= 400) {
