@@ -30,12 +30,16 @@ public class LoginActivity extends BaseActivity {
             Uri uri = intent.getData();
             String scheme = uri.getScheme();
 
-            if (scheme.equals("http")) {
-                String link = uri.getQueryParameter("link");
-                ReceivedLinkDataSource.createOrUpdate(new ReceivedLink(link));
+            if (scheme.equals("https")) {
+                ReceivedLinkDataSource.createOrUpdate(new ReceivedLink(uri.toString()));
             }
-        }
 
+//            if (scheme.equals("http")) {
+//                String link = uri.getQueryParameter("link");
+////                String link = "https://www.dropbox.com/s/w4vzefp9qen78nz/src.zip?dl=0";
+//                ReceivedLinkDataSource.createOrUpdate(new ReceivedLink(link));
+//            }
+        }
     }
 
 }

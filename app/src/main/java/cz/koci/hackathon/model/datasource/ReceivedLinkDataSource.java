@@ -16,7 +16,7 @@ public class ReceivedLinkDataSource {
         receivedLink.save();
     }
 
-    public static List<ReceivedLink> findNewlyReceivedLink() {
+    public static List<ReceivedLink> findNewlyReceivedLinks() {
         return SQLite.select().from(ReceivedLink.class).queryList();
     }
 }
