@@ -27,4 +27,7 @@ public interface ApiInterface {
 
     @POST("sharing/create_shared_link_with_settings")
     Call<Metadata> createSharedLink(@Body SharedLinkArgument sharedLinkArgument);
+
+    @POST("sharing/get_shared_link_metadata")
+    Call<Metadata> getSharedLinkMetadata(@Body SharedLinkArgument sharedLinkArgument);
 }
