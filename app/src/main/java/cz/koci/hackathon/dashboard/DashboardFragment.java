@@ -1,5 +1,6 @@
 package cz.koci.hackathon.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,7 +69,7 @@ public class DashboardFragment extends BaseFragment {
             return 50;
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder{
+        class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
             @BindView(R.id.nameTextView)
             protected TextView nameTextView;
@@ -78,9 +79,16 @@ public class DashboardFragment extends BaseFragment {
             public ViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
+                itemView.setOnClickListener(this);
             }
 
-
+            @Override
+            public void onClick(View v) {
+                /*Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);*/
+            }
         }
     }
 }
