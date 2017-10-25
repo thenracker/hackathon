@@ -15,8 +15,10 @@ import cz.koci.hackathon.R;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String ACCESS_TOKEN = "";
-    private Object userFiles;
+    private String APP_KEY = "8x4akmcasi46rwv";
+    private String APP_SECRET = "8yoj12oa7kpm8gc";
+
+    private String ACCESS_TOKEN = "vN-eKaVZIsAAAAAAAAAAB1UtnJUpWrPvPZO04F0T20bJLo7Yow6hozCFfduzDBAL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
