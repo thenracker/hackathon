@@ -1,5 +1,6 @@
 package cz.koci.hackathon.service;
 
+import cz.koci.hackathon.model.Metadata;
 import cz.koci.hackathon.model.dto.*;
 import cz.koci.hackathon.model.Folder;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
@@ -23,4 +24,7 @@ public interface ApiInterface {
 
     @POST("files/list_folder/continue")
     Call<Folder> listFolderContinue(@Body CursorArgument cursorArgument);
+
+    @POST("sharing/create_shared_link_with_settings")
+    Call<Metadata> createSharedLink(@Body SharedLinkArgument sharedLinkArgument);
 }

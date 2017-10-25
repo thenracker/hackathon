@@ -1,37 +1,31 @@
 package cz.koci.hackathon.dashboard;
 
 import android.Manifest;
-import android.app.ProgressDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.DateFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -127,12 +121,14 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 @Override
                 public void onClick(View v) {
                     checkPermissionsAndUpload();
+                    menuFab.close(true);
                 }
             });
             openCameraFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     checkPermissionsAndSnapshot();
+                    menuFab.close(true);
                 }
             });
         } else {
@@ -143,11 +139,13 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
     private void checkPermissionsAndUpload() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            if (getActivity().checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                FileUtils.pickFile(this);
+            } else {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_REQUEST_CODE);
             }
         } else {
-            FileUtils.pickFile(getActivity());
+            FileUtils.pickFile(this);
         }
     }
 
@@ -160,7 +158,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 takePicture();
             }
         } else {
-            FileUtils.pickFile(getActivity());
+            FileUtils.pickFile(this);
         }
     }
 
@@ -169,7 +167,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == READ_EXTERNAL_STORAGE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            FileUtils.pickFile(getActivity());
+            FileUtils.pickFile(this);
         } else {
             takePicture();
         }
@@ -200,36 +198,40 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     }
 
     private void uploadFile(String fileUri) {
-        final ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        dialog.setCancelable(false);
-        dialog.setMessage("Uploading");
-        dialog.show();
+
+        buildNotification(getString(R.string.sending), getString(R.string.sending_in_progress), true);
 
         new UploadFileTask(getContext(), DropboxClientFactory.getClient(), new UploadFileTask.Callback() {
             @Override
             public void onUploadComplete(FileMetadata result) {
-                dialog.dismiss();
-
-                String message = result.getName() + " size " + result.getSize() + " modified " +
-                        DateFormat.getDateTimeInstance().format(result.getClientModified());
-                Toast.makeText(getContext(), message, Toast.LENGTH_SHORT)
-                        .show();
-
+                buildNotification(getString(R.string.sending), getString(R.string.sending_finished), false);
                 onRefresh();
             }
 
             @Override
             public void onError(Exception e) {
-                dialog.dismiss();
-
-                Log.e(TAG, "Failed to upload file.", e);
-                Toast.makeText(getContext(),
-                        "An error has occurred",
-                        Toast.LENGTH_SHORT)
-                        .show();
+                buildNotification(getString(R.string.sending), getString(R.string.sending_failed), false);
             }
         }).execute(fileUri, currentFolder);
+    }
+
+    private void buildNotification(String title, String content, boolean ongoing) {
+        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, new Intent(), 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pendingIntent)
+                .setContentTitle(title)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setContentText(content);
+
+        if (ongoing) {
+            builder.setProgress(0, 0, true);
+        }
+
+        Notification notification = builder.build();
+
+        NotificationManagerCompat.from(getContext()).notify(TAG, 99, notification);
     }
 
     @Override
