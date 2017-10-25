@@ -4,11 +4,14 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.github.clans.fab.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,8 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dropbox.core.v2.files.FileMetadata;
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.List;
 
@@ -54,6 +61,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     private static final String TAG = DashboardRecyclerFragment.class.getSimpleName();
 
     private static final int READ_EXTERNAL_STORAGE_REQUEST_CODE = 0;
+    private static final int CAMERA_REQUEST_CODE = 2;
     private static final int PICKFILE_REQUEST_CODE = 99;
 
     @BindView(R.id.swipeRefreshLayout)
@@ -124,11 +132,11 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             openCameraFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //todo
+                    checkPermissionsAndSnapshot();
                 }
             });
         } else {
-            pickFileFab.setVisibility(View.GONE);
+            menuFab.setVisibility(View.GONE);
         }
 
     }
@@ -143,12 +151,35 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         }
     }
 
+    private void checkPermissionsAndSnapshot() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    || getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, CAMERA_REQUEST_CODE);
+            } else {
+                takePicture();
+            }
+        } else {
+            FileUtils.pickFile(getActivity());
+        }
+    }
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == READ_EXTERNAL_STORAGE_REQUEST_CODE && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             FileUtils.pickFile(getActivity());
+        } else {
+            takePicture();
         }
+    }
+
+    private void takePicture() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        //Uri uri = Uri.parse("file:///sdcard/photo.jpg");
+        //intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
 
     @Override
@@ -159,6 +190,12 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             if (resultCode == RESULT_OK) {
                 uploadFile(data.getData().toString());
             }
+        }
+
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
+
+            //todo
+
         }
     }
 
