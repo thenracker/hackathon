@@ -3,11 +3,9 @@ package cz.koci.hackathon.dashboard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +24,6 @@ import cz.koci.hackathon.model.Folder;
 import cz.koci.hackathon.model.Metadata;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
 import cz.koci.hackathon.service.RestClient;
-import cz.koci.hackathon.shared.BaseActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -45,7 +42,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     DashboardRecyclerAdapter adapter;
 
     private static final String ARG_IS_SHARED = "ARG_IS_SHARED";
-    private boolean iShared; //odeslané vs přijaté odkazy a soubory
+    private boolean isShared; //odeslané vs přijaté odkazy a soubory
 
     public static DashboardRecyclerFragment newInstance(boolean iShared) { //todo
         Bundle args = new Bundle();
@@ -71,7 +68,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         super.onViewCreated(view, savedInstanceState);
 
         if (getArguments() != null){
-            iShared = getArguments().getBoolean(ARG_IS_SHARED);
+            isShared = getArguments().getBoolean(ARG_IS_SHARED);
         }
 
         swipeRefreshLayout.setRefreshing(false);
@@ -85,6 +82,10 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         //adapter.setOurDB..
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+
+        if (isShared) {
+
+        }
     }
 
     @Override
