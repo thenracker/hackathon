@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import cz.koci.hackathon.R;
 import cz.koci.hackathon.login.LoginFragment;
+import cz.koci.hackathon.model.datasource.ReceivedLinkDataSource;
+import cz.koci.hackathon.model.table.ReceivedLink;
 import cz.koci.hackathon.shared.BaseActivity;
 
 /**
@@ -24,6 +26,10 @@ public class DashboardActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null){
             getSupportFragmentManager().beginTransaction().replace(R.id.container, DashboardFragment.newInstance()).commit();
+        }
+
+        for (ReceivedLink receivedLink : ReceivedLinkDataSource.findNewlyReceivedLinks()) {
+
         }
     }
 }

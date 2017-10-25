@@ -1,4 +1,4 @@
-package cz.koci.hackathon.model;
+package cz.koci.hackathon.model.table;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;

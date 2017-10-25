@@ -3,9 +3,15 @@ package cz.koci.hackathon.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.util.List;
 
+import cz.koci.hackathon.utils.AppDatabase;
+
+@Table(database = AppDatabase.class)
 public class Metadata {
     public enum Type {
         FOLDER("folder"), FILE("file"), UNKNOWN(null);
@@ -34,49 +40,76 @@ public class Metadata {
             return UNKNOWN;
         }
     }
-
+    @Column
     @SerializedName("url")
     @Expose
     private String url;
+
+    @Column
     @SerializedName(".tag")
     @Expose
     private String tag;
+
+    @Column
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private String id;
+
+    @Column
     @SerializedName("client_modified")
     @Expose
     private String clientModified;
+
+    @Column
     @SerializedName("server_modified")
     @Expose
     private String serverModified;
+
+    @Column
     @SerializedName("rev")
     @Expose
     private String rev;
+
+    @Column
     @SerializedName("size")
     @Expose
     private Long size;
+
+    @Column
     @SerializedName("path_lower")
     @Expose
     private String pathLower;
+
+    @Column
     @SerializedName("path_display")
     @Expose
     private String pathDisplay;
-    @SerializedName("sharing_info")
-    @Expose
-    private SharingInfo sharingInfo;
-    @SerializedName("property_groups")
-    @Expose
-    private List<PropertyGroup> propertyGroups = null;
+
+    @Column
     @SerializedName("has_explicit_shared_members")
     @Expose
     private Boolean hasExplicitSharedMembers;
+
+    @Column
     @SerializedName("content_hash")
     @Expose
     private String contentHash;
+
+
+
+    @SerializedName("sharing_info")
+    @Expose
+    private SharingInfo sharingInfo;
+
+    @SerializedName("property_groups")
+    @Expose
+    private List<PropertyGroup> propertyGroups = null;
+
     @SerializedName("link_permissions")
     @Expose
     private LinkPermissions linkPermissions;
