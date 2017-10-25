@@ -11,4 +11,6 @@
     <string name="ok">OK</string>
     <string name="dashboard_title">Přehled</string>
     <string name="refresh">Aktualizovat</string>
+    <string name="i_shared">Odeslané</string>
+    <string name="they_shared">Přijaté</string>
 </resources>
