@@ -44,9 +44,13 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
     DashboardRecyclerAdapter adapter;
 
+    private static final String ARG_IS_SHARED = "ARG_IS_SHARED";
+    private boolean iShared; //odeslané vs přijaté odkazy a soubory
+
     public static DashboardRecyclerFragment newInstance(boolean iShared) { //todo
         Bundle args = new Bundle();
         DashboardRecyclerFragment fragment = new DashboardRecyclerFragment();
+        args.putBoolean(ARG_IS_SHARED, iShared);
         fragment.setArguments(args);
         return fragment;
     }
@@ -65,6 +69,10 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (getArguments() != null){
+            iShared = getArguments().getBoolean(ARG_IS_SHARED);
+        }
 
         swipeRefreshLayout.setRefreshing(false);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -135,10 +143,15 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            if (entries.get(position).getType().equals(Metadata.Type.FOLDER)){
+            Metadata metadata = entries.get(position);
+            if (metadata.getType().equals(Metadata.Type.FOLDER)){
                 holder.imageView.setImageResource(R.drawable.ic_folder_white_circle_green_24px);
             } else{
-                holder.imageView.setImageResource(R.drawable.ic_file_white_circle_green_24px);
+                if (metadata.getName().contains(".pdf")){
+                    holder.imageView.setImageResource(R.drawable.ic_pdf_white_circle_green_24px);
+                } else{
+                    holder.imageView.setImageResource(R.drawable.ic_file_white_circle_green_24px);
+                }
             }
             holder.nameTextView.setText(entries.get(position).getName());
             holder.subNameTextView.setText(entries.get(position).getTag());

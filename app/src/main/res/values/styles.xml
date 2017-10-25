@@ -9,11 +9,17 @@
         <item name="colorControlNormal">#fff</item>
         <item name="colorControlActivated">#fff</item>
         <item name="colorControlHighlight">#fff</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="myTheme.ActionBar.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#fff</item>
+        <!--<item name="android:textSize">@dimen/app_head</item>-->
     </style>
 
 </resources>
