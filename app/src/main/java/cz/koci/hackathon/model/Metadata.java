@@ -35,9 +35,6 @@ public class Metadata {
         }
     }
 
-    public static final String TAG_FOLDER = "folder";
-    public static final String TAG_FILE = "file";
-
     @SerializedName(".tag")
     @Expose
     private String tag;
@@ -77,6 +74,8 @@ public class Metadata {
     @SerializedName("content_hash")
     @Expose
     private String contentHash;
+
+    private transient Type type;
 
     public String getTag() {
         return tag;
@@ -183,7 +182,9 @@ public class Metadata {
     }
 
     public Type getType() {
-        return Type.getByValue(tag);
+        if (type == null) type = Type.getByValue(tag);
+        
+        return type;
     }
 
 }

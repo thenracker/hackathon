@@ -1,6 +1,6 @@
 package cz.koci.hackathon.service;
 
-import cz.koci.hackathon.model.dto.FilePath;
+import cz.koci.hackathon.model.dto.*;
 import cz.koci.hackathon.model.Folder;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
 import cz.koci.hackathon.model.TemporaryLink;
@@ -20,4 +20,7 @@ public interface ApiInterface {
 
     @POST("files/list_folder")
     Call<Folder> listFolder(@Body ListFolderArgument listFolderArgument);
+
+    @POST("files/list_folder/continue")
+    Call<Folder> listFolderContinue(@Body CursorArgument cursorArgument);
 }
