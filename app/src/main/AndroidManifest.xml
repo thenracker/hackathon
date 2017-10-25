@@ -40,6 +40,7 @@
                 <!--https://www.dropbox.com/s/w4vzefp9qen78nz/src.zip?dl=0-->
                 <data
                     android:host="www.dropbox.com"
+                    android:pathPrefix="/s"
                     android:scheme="https" />
             </intent-filter>
         </activity>
