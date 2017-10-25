@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -135,6 +136,11 @@ public class DashboardFragment extends DropboxFragment implements SwipeRefreshLa
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            if (entries.get(position).getType().equals(Metadata.Type.FOLDER)){
+                holder.imageView.setImageResource(R.drawable.ic_folder_white_circle_green_24px);
+            } else{
+                holder.imageView.setImageResource(R.drawable.ic_file_white_circle_green_24px);
+            }
             holder.nameTextView.setText(entries.get(position).getName());
             holder.subNameTextView.setText(entries.get(position).getTag());
         }
@@ -154,6 +160,8 @@ public class DashboardFragment extends DropboxFragment implements SwipeRefreshLa
             protected TextView nameTextView;
             @BindView(R.id.subNameTextView)
             protected TextView subNameTextView;
+            @BindView(R.id.imageView)
+            protected ImageView imageView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
