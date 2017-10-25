@@ -30,4 +30,7 @@ public interface ApiInterface {
 
     @POST("sharing/get_shared_link_metadata")
     Call<Metadata> getSharedLinkMetadata(@Body SharedLinkArgument sharedLinkArgument);
+
+    @POST("sharing/list_shared_links")
+    Call<Folder> getListSharedLinkMetadata(@Body ListFolderArgument sharedLinkArgument);
 }
