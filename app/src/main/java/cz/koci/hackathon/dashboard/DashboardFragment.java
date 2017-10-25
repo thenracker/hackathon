@@ -3,9 +3,12 @@ package cz.koci.hackathon.dashboard;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,14 +16,19 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.shared.BaseActivity;
 import cz.koci.hackathon.shared.BaseFragment;
 
 /**
  * Created by petrw on 25.10.2017.
  */
 
-public class DashboardFragment extends BaseFragment {
+public class DashboardFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
 
@@ -41,9 +49,37 @@ public class DashboardFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        BaseActivity activity = (BaseActivity) getActivity();
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setTitle(R.string.dashboard_title);
+
+        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         adapter = new DashboardRecyclerAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+        onRefresh();
+        //todo nakopat data z db flow a zároveň spustit randálek na refresh z drop boxu
+    }
+
+    @Override
+    protected int getMenuResId() {
+        return R.menu.dashboard_menu;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menuRefresh){
+            //todo refresh
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRefresh() {
+        //todo sosnout a po sosnutí zastavit refreshing
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     class DashboardRecyclerAdapter extends RecyclerView.Adapter<DashboardRecyclerAdapter.ViewHolder> {

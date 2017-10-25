@@ -6,4 +6,6 @@
     <string name="username">Jméno</string>
     <string name="password">Heslo</string>
     <string name="login">Přihlásit</string>
+    <string name="dashboard_title">Přehled</string>
+    <string name="refresh">Aktualizovat</string>
 </resources>
