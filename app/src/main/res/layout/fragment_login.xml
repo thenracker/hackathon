@@ -18,21 +18,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        app:srcCompat="@drawable/ic_fingerprint_black_64px"
-        android:layout_below="@id/app_bar"
-        android:id="@+id/fingerprintImageView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="36dp"
+        android:gravity="center">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_centerHorizontal="true"
-        android:text="@string/fingerprint_login"
-        android:layout_below="@+id/fingerprintImageView"
-        android:layout_marginTop="27dp" />
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:srcCompat="@drawable/ic_fingerprint_black_64px"
+            android:layout_below="@id/app_bar"
+            android:id="@+id/fingerprintImageView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="36dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_centerHorizontal="true"
+            android:text="@string/fingerprint_login"
+            android:layout_below="@+id/fingerprintImageView"
+            android:layout_marginTop="27dp" />
+
+    </LinearLayout>
+
+
 </RelativeLayout>

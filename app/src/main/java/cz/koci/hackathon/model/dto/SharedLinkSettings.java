@@ -17,7 +17,7 @@ public class SharedLinkSettings {
 
     @SerializedName("requested_visibility")
     @Expose
-    private RequestedVisibility requestedVisibility;
+    private String requestedVisibility;
 
     @SerializedName("link_password")
     @Expose
@@ -28,12 +28,12 @@ public class SharedLinkSettings {
     private String expires;
 
     public SharedLinkSettings() {
-        this.requestedVisibility = RequestedVisibility.PUBLIC;
+        this.requestedVisibility = "public";
         setupExpiryDate();
     }
 
     public SharedLinkSettings(String password) {
-        this.requestedVisibility = RequestedVisibility.PASSWORD;
+        this.requestedVisibility = "password";
         this.password = password;
        setupExpiryDate();
     }
