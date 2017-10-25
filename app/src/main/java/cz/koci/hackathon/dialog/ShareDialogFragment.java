@@ -178,7 +178,7 @@ public class ShareDialogFragment extends DialogFragment implements View.OnClickL
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_EMAIL, email);
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject));
         intent.putExtra(Intent.EXTRA_TEXT, note + "\n\n" + url);
 
