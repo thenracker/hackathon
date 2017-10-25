@@ -9,4 +9,6 @@
     <string name="login_failed_retry">Přihlášení k Dropboxu selhalo. Připojit znovu?</string>
     <string name="cancel">Zrušit</string>
     <string name="ok">OK</string>
+    <string name="dashboard_title">Přehled</string>
+    <string name="refresh">Aktualizovat</string>
 </resources>
