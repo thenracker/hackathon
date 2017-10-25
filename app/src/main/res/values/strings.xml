@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Hackathon</string>
-    <string name="app_key">8x4akmcasi46rwv</string>
+    <string name="dropbox_app_key">8x4akmcasi46rwv</string>
+
+    <string name="login_title">Přihlášení</string>
+    <string name="username">Jméno</string>
+    <string name="password">Heslo</string>
+    <string name="login">Přihlásit</string>
 </resources>

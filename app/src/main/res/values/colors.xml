@@ -3,4 +3,6 @@
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryDark">#2E7D32</color>
     <color name="colorAccent">#1B5E20</color>
+    <color name="textPrimary">#000</color>
+    <color name="textSecondary">#222</color>
 </resources>
