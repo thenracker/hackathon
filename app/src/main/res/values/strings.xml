@@ -22,4 +22,6 @@
     <string name="share">Sdílet</string>
     <string name="show_sharing">Zobrazit sdílení</string>
     <string name="not_shared_yet">Zatím nesdíleno</string>
+
+    <string name="fingerprint_login">Přihlašte se otiskem prstu</string>
 </resources>
