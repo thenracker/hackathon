@@ -6,13 +6,14 @@ import com.google.gson.annotations.SerializedName;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
 import cz.koci.hackathon.utils.AppDatabase;
 
 @Table(database = AppDatabase.class)
-public class Metadata {
+public class Metadata extends BaseModel {
     public enum Type {
         FOLDER("folder"), FILE("file"), UNKNOWN(null);
 
@@ -40,6 +41,7 @@ public class Metadata {
             return UNKNOWN;
         }
     }
+
     @Column
     @SerializedName("url")
     @Expose
@@ -99,7 +101,6 @@ public class Metadata {
     @SerializedName("content_hash")
     @Expose
     private String contentHash;
-
 
 
     @SerializedName("sharing_info")
@@ -204,7 +205,7 @@ public class Metadata {
         this.propertyGroups = propertyGroups;
     }
 
-    public Boolean getHasExplicitSharedMembers() {
+    public Boolean isHasExplicitSharedMembers() {
         return hasExplicitSharedMembers;
     }
 
@@ -238,8 +239,29 @@ public class Metadata {
 
     public Type getType() {
         if (type == null) type = Type.getByValue(tag);
-        
+
         return type;
     }
 
+    @Column
+    private boolean downloaded;
+
+    @Column
+    private String localPath;
+
+    public boolean isDownloaded() {
+        return downloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded = downloaded;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
 }

@@ -25,4 +25,8 @@
 
     <string name="fingerprint_login">Přihlašte se otiskem prstu</string>
     <string name="no_data">Žádné položky</string>
+    <string name="downloading">Stahování</string>
+    <string name="downloading_in_progress">Probíhá stahování souboru</string>
+    <string name="downloading_successful">Stahování dokončeno</string>
+    <string name="downloading_failed">Stahování selhalo</string>
 </resources>

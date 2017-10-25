@@ -35,7 +35,6 @@ public class LoginActivity extends BaseActivity {
                 ReceivedLinkDataSource.createOrUpdate(new ReceivedLink(link));
             }
         }
-
     }
 
 }
