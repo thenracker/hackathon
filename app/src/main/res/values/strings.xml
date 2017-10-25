@@ -19,6 +19,10 @@
     <string name="sending">Odesílání</string>
     <string name="sending_finished">Odesílání dokončeno</string>
     <string name="sending_failed">Odesílání selhalo</string>
+    <string name="downloading">Stahování</string>
+    <string name="downloading_in_progress">Probíhá stahování souboru</string>
+    <string name="downloading_successful">Stahování dokončeno</string>
+    <string name="downloading_failed">Stahování selhalo</string>
     <string name="share">Sdílet</string>
     <string name="show_sharing">Zobrazit sdílení</string>
     <string name="not_shared_yet">Zatím nesdíleno</string>

@@ -3,10 +3,17 @@ package cz.koci.hackathon.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
 
-public class Metadata {
+import cz.koci.hackathon.utils.AppDatabase;
+
+@Table(database = AppDatabase.class)
+public class Metadata extends BaseModel {
     public enum Type {
         FOLDER("folder"), FILE("file"), UNKNOWN(null);
 
@@ -35,48 +42,75 @@ public class Metadata {
         }
     }
 
+    @Column
     @SerializedName("url")
     @Expose
     private String url;
+
+    @Column
     @SerializedName(".tag")
     @Expose
     private String tag;
+
+    @Column
     @SerializedName("name")
     @Expose
     private String name;
+
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private String id;
+
+    @Column
     @SerializedName("client_modified")
     @Expose
     private String clientModified;
+
+    @Column
     @SerializedName("server_modified")
     @Expose
     private String serverModified;
+
+    @Column
     @SerializedName("rev")
     @Expose
     private String rev;
+
+    @Column
     @SerializedName("size")
     @Expose
     private Long size;
+
+    @Column
     @SerializedName("path_lower")
     @Expose
     private String pathLower;
+
+    @Column
     @SerializedName("path_display")
     @Expose
     private String pathDisplay;
-    @SerializedName("sharing_info")
-    @Expose
-    private SharingInfo sharingInfo;
-    @SerializedName("property_groups")
-    @Expose
-    private List<PropertyGroup> propertyGroups = null;
+
+    @Column
     @SerializedName("has_explicit_shared_members")
     @Expose
     private Boolean hasExplicitSharedMembers;
+
+    @Column
     @SerializedName("content_hash")
     @Expose
     private String contentHash;
+
+
+    @SerializedName("sharing_info")
+    @Expose
+    private SharingInfo sharingInfo;
+
+    @SerializedName("property_groups")
+    @Expose
+    private List<PropertyGroup> propertyGroups = null;
+
     @SerializedName("link_permissions")
     @Expose
     private LinkPermissions linkPermissions;
@@ -171,7 +205,7 @@ public class Metadata {
         this.propertyGroups = propertyGroups;
     }
 
-    public Boolean getHasExplicitSharedMembers() {
+    public Boolean isHasExplicitSharedMembers() {
         return hasExplicitSharedMembers;
     }
 
@@ -205,8 +239,29 @@ public class Metadata {
 
     public Type getType() {
         if (type == null) type = Type.getByValue(tag);
-        
+
         return type;
     }
 
+    @Column
+    private boolean downloaded;
+
+    @Column
+    private String localPath;
+
+    public boolean isDownloaded() {
+        return downloaded;
+    }
+
+    public void setDownloaded(boolean downloaded) {
+        this.downloaded = downloaded;
+    }
+
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
 }

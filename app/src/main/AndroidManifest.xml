@@ -37,11 +37,10 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
+                <!--https://www.dropbox.com/s/w4vzefp9qen78nz/src.zip?dl=0-->
                 <data
-                    android:host="hackathon.2017.com"
-                    android:path="/receive"
-                    android:scheme="http" />
+                    android:host="www.dropbox.com"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
 

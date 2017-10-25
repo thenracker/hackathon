@@ -16,6 +16,8 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.TextView;
 
+import com.dropbox.core.android.Auth;
+
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -72,6 +74,12 @@ public class LoginFragment extends DropboxFragment {
     @Override
     protected boolean loginWhenNoToken() {
         return true;
+    }
+
+    @Override
+    protected void showLoginFailedDialog() {
+        //V Loginu nechceme zobrazovat dialog, ale rovnou přesměrovat na dropbox
+        Auth.startOAuth2Authentication(getContext(), getString(R.string.dropbox_app_key));
     }
 
     @Override

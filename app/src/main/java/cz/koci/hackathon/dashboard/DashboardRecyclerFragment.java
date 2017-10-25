@@ -6,8 +6,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,13 +24,25 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dropbox.core.v2.files.FileMetadata;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +58,7 @@ import cz.koci.hackathon.model.Metadata;
 import cz.koci.hackathon.model.dto.ListFolderArgument;
 import cz.koci.hackathon.service.RestClient;
 import cz.koci.hackathon.service.UploadFileTask;
+import cz.koci.hackathon.shared.LinkMetadataLoadedEvent;
 import cz.koci.hackathon.utils.FileUtils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -108,6 +124,7 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        EventBus.getDefault().register(this);
 
         if (getArguments() != null) {
             myFiles = getArguments().getBoolean(ARG_IS_SHARED);
@@ -145,7 +162,12 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
         } else {
             menuFab.setVisibility(View.GONE);
         }
+    }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
     }
 
     private void checkPermissionsAndUpload() {
@@ -283,22 +305,35 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                 }
             });
         } else {
-            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
-            RestClient.get().getListSharedLinkMetadata(arg).enqueue(new Callback<Folder>() {
-                @Override
-                public void onResponse(Call<Folder> call, Response<Folder> response) {
-                    if (response.code() == 200) {
-                        System.out.println("kok");
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Folder> call, Throwable t) {
-                    System.out.println("kook2");
-                }
-            });
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).queryList();
+            adapter.setEntries(metadatas);
+            adapter.notifyDataSetChanged();
+//            arg.setPath(""); //TODO - od matěje z DB flow - pro každý soubor
+//            RestClient.get().getListSharedLinkMetadata(arg).enqueue(new Callback<Folder>() {
+//                @Override
+//                public void onResponse(Call<Folder> call, Response<Folder> response) {
+//                    if (response.code() == 200) {
+//                        System.out.println("kok");
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Folder> call, Throwable t) {
+//                    System.out.println("kook2");
+//                }
+//            });
         }
         swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMetadataLoaded(LinkMetadataLoadedEvent event) {
+        if (!myFiles) {
+            List<Metadata> metadatas = SQLite.select().from(Metadata.class).queryList();
+            adapter.setEntries(metadatas);
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
     class DashboardRecyclerAdapter extends RecyclerView.Adapter<DashboardRecyclerAdapter.ViewHolder> {
@@ -403,18 +438,65 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
                         }
                     });
                 } else {
-                    Metadata metadata = entries.get(getAdapterPosition());
+                    final Metadata metadata = entries.get(getAdapterPosition());
                     if (metadata.getType() == Metadata.Type.FOLDER) {
                         Intent i = new Intent(getActivity(), DashboardRecyclerActivity.class);
                         i.putExtra(ARG_ROOT_PATH, metadata.getPathLower());
                         i.putExtra(ARG_IS_SHARED, myFiles);
                         startActivity(i);
+                    } else if (metadata.isDownloaded()) {
+                        Intent intent = new Intent();
+                        intent.setAction(android.content.Intent.ACTION_VIEW);
+                        File file = new File(metadata.getLocalPath());
+
+                        MimeTypeMap mime = MimeTypeMap.getSingleton();
+                        String ext = file.getName().substring(file.getName().indexOf(".") + 1);
+                        String type = mime.getMimeTypeFromExtension(ext);
+
+                        intent.setDataAndType(Uri.fromFile(file), type);
+
+                        getContext().startActivity(intent);
                     } else {
-                        //TODO spustit soubor
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                buildNotification(getString(R.string.downloading), getString(R.string.downloading_in_progress), true);
+                                try {
+                                    downloadFile(metadata);
+                                    metadata.setDownloaded(true);
+                                    metadata.save();
+                                    buildNotification(getString(R.string.downloading), getString(R.string.downloading_successful), false);
+                                } catch (IOException e) {
+                                    buildNotification(getString(R.string.downloading), getString(R.string.downloading_failed), false);
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
                     }
                 }
             }
         }
+    }
+
+    private void downloadFile(Metadata metadata) throws IOException {
+        URL url;
+        url = new URL(metadata.getUrl());
+        URLConnection urlConnection = url.openConnection();
+        urlConnection.connect();
+        int fileSize = urlConnection.getContentLength();
+        InputStream inputStream = urlConnection.getInputStream();
+        String filePath = Environment.getExternalStorageDirectory() + "/Hackathon/" + metadata.getName();
+        new File(filePath).getParentFile().mkdirs(); //vytvoření složek
+        FileOutputStream fos = new FileOutputStream(filePath);
+
+        int bytesRead;
+        byte[] buffer = new byte[2048];
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            fos.write(buffer, 0, bytesRead);
+        }
+
+        fos.close();
+        inputStream.close();
     }
 
     public static void showPopupMenu(final Context context, View v, int resource, PopupMenu.OnMenuItemClickListener listener) {

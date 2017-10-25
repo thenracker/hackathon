@@ -45,7 +45,7 @@ public abstract class DropboxFragment extends BaseFragment {
         }
     }
 
-    private void showLoginFailedDialog() {
+    protected void showLoginFailedDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
         builder.setMessage(R.string.login_failed_retry);
