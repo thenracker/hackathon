@@ -23,6 +23,8 @@
         <activity
             android:name=".dashboard.DashboardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".detail.DetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name="com.dropbox.core.android.AuthActivity"
@@ -41,5 +43,7 @@
         </activity>
 
     </application>
+
+
 
 </manifest>
