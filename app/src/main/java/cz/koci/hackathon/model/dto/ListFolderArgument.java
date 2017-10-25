@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ListFolderArgument {
+
     @SerializedName("path")
     @Expose
     private String path;

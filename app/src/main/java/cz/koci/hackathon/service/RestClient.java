@@ -23,7 +23,7 @@ public class RestClient {
     private static HttpLoggingInterceptor logging = new HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY);
 
-    public static ApiInterface getIn() {
+    public static ApiInterface get() {
         if (apiInterface == null) {
             OkHttpClient httpClient = new OkHttpClient.Builder()
                     .connectTimeout(10, TimeUnit.SECONDS)

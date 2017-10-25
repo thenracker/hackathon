@@ -1,6 +1,5 @@
 package cz.koci.hackathon.dashboard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,14 +15,21 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cz.koci.hackathon.R;
+import cz.koci.hackathon.login.DropboxFragment;
+import cz.koci.hackathon.model.Folder;
+import cz.koci.hackathon.model.dto.ListFolderArgument;
+import cz.koci.hackathon.service.RestClient;
 import cz.koci.hackathon.shared.BaseActivity;
 import cz.koci.hackathon.shared.BaseFragment;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by petrw on 25.10.2017.
  */
 
-public class DashboardFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class DashboardFragment extends DropboxFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -42,6 +48,12 @@ public class DashboardFragment extends BaseFragment implements SwipeRefreshLayou
     }
 
     @Override
+    protected void onClientReady() {
+        swipeRefreshLayout.setEnabled(true);
+        onRefresh();
+    }
+
+    @Override
     protected int getLayoutResId() {
         return R.layout.fragment_dashboard;
     }
@@ -55,12 +67,14 @@ public class DashboardFragment extends BaseFragment implements SwipeRefreshLayou
 
         swipeRefreshLayout.setRefreshing(false);
         swipeRefreshLayout.setOnRefreshListener(this);
+        if (!hasToken()) {
+            swipeRefreshLayout.setEnabled(false);
+        }
 
         adapter = new DashboardRecyclerAdapter();
+        //adapter.setOurDB..
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-        onRefresh();
-        //todo nakopat data z db flow a zároveň spustit randálek na refresh z drop boxu
     }
 
     @Override
@@ -71,14 +85,33 @@ public class DashboardFragment extends BaseFragment implements SwipeRefreshLayou
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menuRefresh){
-            //todo refresh
+            onRefresh();
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onRefresh() {
-        //todo sosnout a po sosnutí zastavit refreshing
+        ListFolderArgument arg = new ListFolderArgument();
+        arg.setPath("");
+        RestClient.get().listFolder(arg).enqueue(new Callback<Folder>() {
+            @Override
+            public void onResponse(Call<Folder> call, Response<Folder> response) {
+                if (response.code() == 200){
+                    System.out.println("tt");
+                } else if (response.code() >= 400){
+
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<Folder> call, Throwable t) {
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         swipeRefreshLayout.setRefreshing(false);
     }
 
