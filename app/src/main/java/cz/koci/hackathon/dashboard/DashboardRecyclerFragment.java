@@ -373,10 +373,10 @@ public class DashboardRecyclerFragment extends DropboxFragment implements SwipeR
             holder.thirdNameTextView.setText(R.string.not_shared_yet);
             if (!myFiles){
                 holder.thirdNameTextView.setVisibility(View.GONE);
-                holder.imageView.setVisibility(View.GONE);
+                holder.menuImageView.setVisibility(View.GONE);
             } else{
                 holder.thirdNameTextView.setVisibility(View.VISIBLE);
-                holder.imageView.setVisibility(View.VISIBLE);
+                holder.menuImageView.setVisibility(View.VISIBLE);
             }
 
             if (metadata.isDownloading()) {
