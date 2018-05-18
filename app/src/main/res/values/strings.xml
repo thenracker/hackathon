@@ -1,3 +1,41 @@
 <resources>
     <string name="app_name">Hackathon</string>
+    <string name="dropbox_app_key">8x4akmcasi46rwv</string>
+
+    <string name="login_title">Přihlášení</string>
+    <string name="username">Jméno</string>
+    <string name="password">Heslo</string>
+    <string name="login">Přihlásit</string>
+    <string name="login_failed_retry">Přihlášení k Dropboxu selhalo. Připojit znovu?</string>
+    <string name="cancel">Zrušit</string>
+    <string name="ok">OK</string>
+    <string name="dashboard_title">Přehled</string>
+    <string name="refresh">Aktualizovat</string>
+    <string name="i_shared">Mé soubory</string>
+    <string name="they_shared">Sdíleno se mnou</string>
+    <string name="open_camera">Vyfotit</string>
+    <string name="pick_file">Vybrat soubor</string>
+    <string name="sending_in_progress">Probíhá odesílání souboru</string>
+    <string name="sending">Odesílání</string>
+    <string name="sending_finished">Odesílání dokončeno</string>
+    <string name="sending_failed">Odesílání selhalo</string>
+    <string name="downloading">Stahování</string>
+    <string name="downloading_in_progress">Probíhá stahování souboru</string>
+    <string name="downloading_successful">Stahování dokončeno</string>
+    <string name="downloading_failed">Stahování selhalo</string>
+    <string name="share">Sdílet</string>
+    <string name="show_sharing">Zobrazit sdílení</string>
+    <string name="not_shared_yet">Zatím nesdíleno</string>
+
+    <string name="fingerprint_login">Přihlašte se otiskem prstu</string>
+    <string name="no_data">Žádné položky</string>
+
+    <string name="prompt_set_password">Zadat heslo?</string>
+    <string name="share_dialog_title">Sdílet</string>
+    <string name="error_missing_email">Zadejte email adresáta</string>
+    <string name="email_subject">Hackathon 2017</string>
+    <string name="send_email">Odeslat email</string>
+    <string name="email_address">Adresát</string>
+    <string name="note">Poznámka</string>
+    <string name="shared">Sdíleno</string>
 </resources>
